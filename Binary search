@@ -1,0 +1,38 @@
+//matrix search
+
+bool search (vector<vector<int>> v , int  B)
+{
+    int  n  = v.size();
+    int m = V[0].size();
+    int l = 0;
+    int h = n * m -1;
+    
+    while(l <= h)
+    {
+        int mid = l +(h-l)/2;
+        
+        int x = mid / m;
+        int y = mid % m;
+        
+        if(A[x][y] == B)
+            return true;
+        
+        if(A[x][y] > B)
+        {
+            h = mid - 1;
+        }
+        else
+            l = mid + 1;
+    }
+    return false;
+}
+
+//biotonic 
+
+// wood cutting
+
+//smallest or equall
+
+//median matrix
+
+//min no. of pages
