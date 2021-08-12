@@ -1,0 +1,328 @@
+#include <iostream>
+using namespace std;
+//
+vector<vector<int>> nbrs = {{0,1} , {-1,0} , {1,0} , {0,-1}};
+int solve(int i , int j , vector<vector<int>> &grid ,vector<vector<int>> &vis)
+{
+    vis[node] = true;
+    
+    for(auto& nbr : nbrs)
+    {
+        int x = i + nbr[0];
+        int y = j + nbr[1];
+        
+        if(x < 0 || y < 0 || x >= grid.size() || y >=grid[0].size() || vis[x][y] || grid[i][j] == 1)
+            continue;
+        
+        dfs(x,y,grid,vis)
+    }
+}
+
+//course shedule IV
+ bool solve(int s , int d , vector<vector<int>> &g , vector<bool> &vis)
+    {
+        if(s == d)
+            return true;
+        vis[s] = true;
+        
+        for(auto i : g[s])
+        {
+            if(!vis[i])
+            {
+                if(solve(i,d,g,vis))
+                    return true;
+            }
+        }
+        return false;
+    }
+    vector<bool> checkIfPrerequisite(int n, vector<vector<int>>& p, vector<vector<int>>& q) {
+        
+        vector<bool >res;
+        vector<vector<int>> g(n);
+        for( auto it : p)
+        {
+            g[it[0]].push_back(it[1]);
+        }
+        
+        for(int i = 0 ; i < q.size() ; i++)
+        {
+            vector<bool> vis(n,false);
+            bool ans = solve(q[i][0] , q[i][1] , g ,vis);
+            res.push_back(ans);
+        }
+        return res;
+    }
+
+// rotten oranges
+
+        
+        // bfs to find the shortest time 
+        vector<int> dir={-1,0,1,0,-1};
+        //Get the all the rotten oranges into the queue
+        
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        queue<pair<int,int>> q;
+        int fresh  = 0;
+        
+         // vector<vector<int>> vis(n,vector<int>(m,0));
+        for(int i = 0 ; i < n ; i++)
+        {
+            for(int j = 0 ; j < m ; j++)
+            {
+                if(grid[i][j] == 2)
+                {
+                    q.push({i,j});
+                }
+                if(grid[i][j] == 1)
+                    fresh++;
+            }
+        }
+        int ans = -1;
+        //bfs
+        while(!q.empty())
+        {   
+            int sz = q.size();
+            
+            while(sz--)
+            { 
+                pair<int,int> p = q.front();
+                q.pop();
+                
+                for(int i = 0 ; i < 4 ; i++)
+                {
+                    int x = p.first + dir[i];
+                    int y = p.second + dir[i+1];
+                    
+                    if(x >= 0 && y >= 0 && x < n && y < m && grid[x][y] == 1)
+                    {
+                        cout<<"hello"<<endl;
+                        grid[x][y] = 2;
+                        q.push({x,y});
+                        fresh--;
+                    }
+                }
+            }
+            ans++;
+        }
+        if(fresh > 0) return -1;
+        if(ans == -1) return 0;
+        return ans;
+        
+    
+    }
+
+//flood fill
+
+ vector<vector<int>> nbrs = {{0,1} , {0,-1} , {1,0} , {-1,0}};
+    
+    void dfs(vector<vector<int>>& image, int i, int j, int &newColor , int &val)
+    {
+        image[i][j] = newColor;
+        
+        for(auto nbr : nbrs)
+        {
+            int x = i + nbr[0];
+            int y = j + nbr[1];
+            
+            if(x < 0 || y < 0 || x >= image.size() || y>= image[0].size() || image[x][y] == newColor || image[x][y] != val)
+                continue;
+            
+            dfs(image , x , y , newColor,val);
+        }
+    }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        vector<vector<int>> res;
+        int val = image[sr][sc];
+       dfs(image , sr , sc , newColor,val);
+       return  image;
+        
+    }
+    
+//course schedule
+bool dfs(int i , vector<vector<int>> &g ,vector<int>& vis, vector<int> &recstack)
+    {
+        vis[i] = true;
+        recstack[i] = true;
+        
+        for(auto& i : g[i])
+        {
+            if(!vis[i])
+            {
+                if(dfs(i , g , vis , recstack))
+                    return true;
+            }
+            if(recstack[i] == true)
+                return true;
+        }
+        recstack[i] = false;
+        return false;
+    }
+    bool canFinish(int n, vector<vector<int>>& p)
+    {
+        
+        vector<int> vis(n,false);
+        
+        vector<int>recStack(n,false);
+        
+        vector<vector<int>> g(n);
+        
+        for(auto it : p)
+        {
+            g[it[0]].push_back(it[1]);
+        }
+        
+        for(int  i = 0 ; i < n ; i++)
+        {
+            if(!vis[i])
+            {
+                if(dfs(i,g,vis,recStack))
+                    return false;
+            }
+        }
+        return true;
+       
+    }
+//source schedule 2 (topo sort)
+
+bool dfs(int i, vector<vector<int>>& g ,vector<int> &vis,vector<int> &recstack , stack<int> &st)
+{
+    vis[i] = true;
+    recstack[i] = true;
+    
+    for(auto it : g[i])
+    {
+        if(!vis[it])
+        {
+            if(dfs(it,g,vis,recstack,st))
+            {
+                return true;
+            }
+        }
+        else if(recstack[it])
+        {
+            return true;
+        }
+    }
+    st.push(i);
+    recstack[i] = false;
+    return false;
+}
+vector<int> findOrder(int n, vector<vector<int>>& p) {
+    // make graph -> count prerequisites per subject -> dfs to check if cycle exist or not -> if exsit Not possible to complete the 
+    vector<vector<int>> g(n);
+    
+    for(auto i : p)
+    {
+        g[i[1]].push_back(i[0]);
+    }
+    
+    vector<int> vis(n,false);
+    vector<int>recstack(n,false);
+    stack<int>st;
+    vector<int> res;
+    for(int i = 0 ; i < n ; i++)
+    {
+        if(!vis[i])
+        {
+            if(dfs(i,g,vis,recstack,st))
+            {
+                return res;
+            }
+        }
+    }
+    
+    while(!st.empty())
+    {
+        res.push_back(st.top());
+        st.pop();
+    }
+    return res;
+    
+}
+
+//Cheapest Flights Within K Stops(shortest path dijsktra)
+ int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+     
+     
+     vector<vector<pair<int,int>>> g(n);
+     vector<int> vis(n,false);
+     for(auto i : flights)
+     {
+         g[i[0]].push_back({i[1],i[2]});
+     }
+        priority_queue<tuple<int,int,int>,vector<tuple<int,int,int>,greater<tuple<int,int,int>>> pq;
+        
+        pq.push({0,src,0});
+        vis[0] = true;
+        
+        while(!pq.empty())
+        {
+            auto[price,i,t] = pq.top();
+            pq.pop();
+            if(i == dst)
+                return price;
+            if(t+1 <= k+1)
+            {
+                for(autp it :g[i])
+                {
+                    if(!vis[it])
+                    {
+                        vis[it] = true;
+                        pq.push({price+it.second,it.first,t+1});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+    
+// critical connection (rank method)->tarjan's algorithm
+int dfs(vector<vector<int>> &g , int i , vector<vector<int>> &res , vector<int> &rank , int prev_rank,int n)
+    {
+        rank[i] = prev_rank + 1;
+        int t = INT_MAX;
+        for(auto it : graph[i])
+        {
+            if(rank[it] == -1){
+                int k = dfs(g,it,res,rank,prev_rank+1,n);
+                if(k > rank[i])
+                    res.push_back({i,it});
+                else
+                    t = min(t,k);
+            }
+            else if(rank[it] == n+1)
+                continue;
+            else
+                t = min(t,rank[it]);
+        }
+        
+        rank[i] = n+1;
+        return t;
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        //rank method
+        //tarjan's algorithm
+        
+        //will provide a rank to every visiting node
+        
+        //rank vector to keep track of visited and unvisited node and as well as keep rank
+        
+        //-1 -> not visited
+        // n+1 -> visited but no cycle detected
+        //[1,n] - > cycle detected
+        vector<int>rank(n+1,-1);
+        vector<vector<int>> graph(n);
+        
+        for(auto& edges : connections)
+        {
+            graph[edges[0]].push_back(edges[1]);
+            graph[edges[1]].push_back(edges[0]);
+        }
+        
+        vector<vector<int>> res;
+        
+        int k = dfs(graph,0,res,rank,0,n);
+        return res;
+    }
